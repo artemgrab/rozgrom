@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger - Messages</title>
+</head>
+<body>
+
+    <main class="app-container">
+        <section class="chat-window">
+            <div class="messages-container">
+                <div class="message incoming">
+                    <div class="message-content">
+                        Hello! How are you doing?
+                        <span class="msg-time">10:01</span>
+                    </div>
+                </div>
+
+                <div class="message outgoing">
+                    <div class="message-content">
+                        I'm good, thanks! Working on the FastAPI project.
+                        <span class="msg-time">10:02</span>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="chat-input-area">
+                <form class="message-form" action="/send-message" method="POST">                    
+                    <input type="text" 
+                        name="message_text" 
+                        placeholder="Write a message..." 
+                        autocomplete="off" 
+                        required>
+                    <button type="submit" class="send-btn">
+                        <span>Send</span>
+                    </button>
+                </form>
+            </footer>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
