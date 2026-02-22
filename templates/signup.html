@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signing up</title>
+</head>
+<body>
+
+    <!-- YOU CAN CHANGE IDs, CLASSES AND OTHERS SINCE THOSE AREN'T USED IN BACKEND, BUT PLS, FOR GOD SAKE,
+    DON'T TOUCH "action", "name" AND "method" OR ILL SEE THE BLAME IN GH AND FUCK YOUR ASS UP
+    (dont do coments as long as this one btw, unless needed)|| TO BE DELETED AFTER READ-->
+
+    <section class="signup_card">
+        <h2>Signing up</h2> 
+        <form id="signup-form" action="/signup" method="POST">
+
+            <div class="input-group">
+                <label for="username_placeholder">Username</label>
+                <input type="text" id="username_placeholder" name="username_placeholder" placeholder="Enter your username" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="email_placeholder">Email</label>
+                <input type="text" id="email_placeholder" name="email_placeholder" placeholder="Enter your email" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password_placeholder">Password</label>
+                <input type="password" id="password_placeholder" name="password_placeholder" placeholder="Enter your password" required>
+            </div>
+
+            <div class="input-group">
+                <label for="confirm_pasword">Confirm password</label>
+                <input type="password" id="confirm_pasword" name="confirm_pasword" placeholder="Confirm your password" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Sign up</button>
+        </form>
+    </section>
+</body>
+</html>
