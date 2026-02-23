@@ -1,35 +1,36 @@
 from fastapi import FastAPI, Form, status, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
+from database import engine, Base
+import models
+from routers import auth, chat
+
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Create the database tables
+models.Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 async def welcome_page():
     return FileResponse("templates/welcome.html")
 
-
 @app.get("/signin")
 async def signin_page():
     return FileResponse("templates/signin.html")
-
 
 @app.get("/signup")
 async def signup_page():
     return FileResponse("templates/signup.html")
 
-
 @app.get("/chats")
 async def chats_page():
     return FileResponse("templates/chats.html")
 
-
 @app.get("/chat/{chat_id}")
 async def chat_page(chat_id: int):
     return FileResponse("templates/chat.html")
-
 
 @app.exception_handler(404)
 async def custom_404_handler(request: Request, __):
