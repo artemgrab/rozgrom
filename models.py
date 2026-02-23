@@ -14,12 +14,13 @@ class User(Base):
     messages_sent = relationship("Message", backref="sender", foreign_keys="Message.sender_id")
 
 
-class Message(Base):
-    __tablename__ = "messages"
+#* Might be useful in future
+# class Message(Base):
+#     __tablename__ = "messages"
 
-    id = Column(Integer, primary_key=True, unique=True, index=True)
-    content = Column(Text)
-    timestamp = Column(DateTime, server_default=func.now())
+#     id = Column(Integer, primary_key=True, unique=True, index=True)
+#     content = Column(Text)
+#     timestamp = Column(DateTime, server_default=func.now())
 
-    sender_id = Column(Integer, ForeignKey("users.id"))
-    reciever_id = Column(Integer, ForeignKey("users.id"))
+#     sender_id = Column(Integer, ForeignKey("users.id"))
+#     reciever_id = Column(Integer, ForeignKey("users.id"))
