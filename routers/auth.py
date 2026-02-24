@@ -12,7 +12,7 @@ async def welcome_page():
 
 @router.get("/signin")
 async def signin_page():
-    return FileResponse("templates/signin.html")
+    return FileResponse("templates/sign-in.html")
 
 @router.post("/signin")
 async def handle_signing_in(
