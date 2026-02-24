@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign up - Duplo</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
 </head>
 <body>
     <div class="login-container">
 
         <h1 class="title" style="margin-bottom: 30px;">Sign up with Email</h1>
-        <form class="auth-form">
-            <input type="text" name="name" autocomplete="name" class="form-input" placeholder="Full Name" required>
+        <form class="auth-form" action="/signup" method="POST">
+            <input type="text" name="username" autocomplete="name" class="form-input" placeholder="Full Name" required>
             <input type="email" name="email" autocomplete="email" class="form-input" placeholder="Email" required>
             
             <div class="input-wrapper">
@@ -37,10 +37,10 @@
         </form>
         
         <p class="footer-text">
-            Existing account? <a href="sign-in.html" class="sign-in-link">Sign in.</a>
+            Existing account? <a href="/signin" class="sign-in-link">Sign in.</a>
         </p>
     </div>
 
-    <script src="eye-password.js"></script>
+    <script src="{{ url_for('static', path='/js/eye-password.js') }}"></script> 
 </body>
 </html>

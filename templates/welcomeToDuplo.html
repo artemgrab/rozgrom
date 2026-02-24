@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Duplo</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
 </head>
 
 <body>
@@ -13,7 +13,7 @@
     <div class="login-container">
         <h1 class="title">
             Welcome to<br>
-            <img src="duplo.png" alt="Duplo" class="logo-img">
+            <img src="{{ url_for('static', path='/icons/duplo.png') }}" alt="Duplo" class="logo-img">
         </h1>
 
         <p class="subtitle">
@@ -22,11 +22,11 @@
 
         <div class="social-login">
             <button class="social-btn" aria-label="Sign in with Google">
-                <img src="google-icon.png" alt="Google">
+                <img src="{{ url_for('static', path='/icons/google-icon.png') }}" alt="Google">
             </button>
 
             <button class="social-btn" aria-label="Sign in with Facebook">
-                <img src="facebook-icon.png" alt="Facebook">
+                <img src="{{ url_for('static', path='/icons/facebook-icon.png') }}" alt="Facebook">
             </button>
         </div>
 
@@ -34,10 +34,10 @@
             <span>OR</span>
         </div>
 
-        <button class="btn-primary" onclick="window.location.href='sign-up.html'">Sign up with Email</button>
+        <button class="btn-primary" onclick="window.location.href='/signup'">Sign up with Email</button>
 
         <p class="footer-text">
-            Existing account? <a href="sign-in.html" class="sign-in-link">Sign in.</a>
+            Existing account? <a href="/signin" class="sign-in-link">Sign in.</a>
         </p>
     </div>
 
