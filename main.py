@@ -1,15 +1,14 @@
-from fastapi import FastAPI, Form, status, Request
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, RedirectResponse
-from database import engine, Base
+from fastapi.responses import FileResponse
+from database import engine
 import models
-from routers import auth, chat
+from routers.router_handler import main_router
 
 
 # Initializing app and toggling on router files
 app = FastAPI()
-app.include_router(auth.router)
-app.include_router(chat.router)
+app.include_router(main_router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
