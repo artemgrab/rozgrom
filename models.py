@@ -24,3 +24,5 @@ class User(Base):
 
 #     sender_id = Column(Integer, ForeignKey("users.id"))
 #     reciever_id = Column(Integer, ForeignKey("users.id"))
+
+#TODO: Create model for chats 

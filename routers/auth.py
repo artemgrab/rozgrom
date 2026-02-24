@@ -29,10 +29,14 @@ async def signup_page():
 
 @router.post("/signup")
 async def handle_registration(
-    username_placeholder: str = Form(...),
-    email_placeholder: str = Form(...),
-    password_placeholder: str = Form(...),
-    confirm_pasword: str = Form(...),
+    username: str = Form(...),
+    email: str = Form(...),
+    password: str = Form(...),
+    confirm_password: str = Form(...),
 ):
 
+    #! One of future implementations
+    # if len(password) > 71: return {"error": "Password shouldn't be longer than 71 cahracters"}
+    # elif len(password) < 8: return {"error": "Password should be at least 8 long"}
+    
     return RedirectResponse(url="/chats", status_code=status.HTTP_303_SEE_OTHER)
