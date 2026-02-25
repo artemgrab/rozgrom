@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from database import engine
+from database import engine, init_db
 import models
 from routers.router_handler import main_router
 
@@ -24,6 +24,10 @@ async def custom_404_handler(request: Request, __):
 
 # Starts up the server on running "main.py" file
 if __name__ == "__main__":
+    print("Initializing database...")
+    init_db()
+    print("Database is ready. Starting the messenger...")
+
     import uvicorn
 
     uvicorn.run(app, host="127.0.0.1", port=8000)
