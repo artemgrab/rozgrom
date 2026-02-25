@@ -1,6 +1,10 @@
-from fastapi import APIRouter, Form, status, Request
+from fastapi import APIRouter, Form, status, Request, Depends
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
+from database import get_db
+import models
+
 
 auth_router = APIRouter()
 
@@ -20,6 +24,7 @@ async def signin_page(request: Request):
     return templates.TemplateResponse("sign-in.html", {"request": request})
 
 
+# Actions after pressing send button in signin form
 @auth_router.post("/signin")
 async def handle_signing_in(
     email: str = Form(...),
@@ -37,18 +42,54 @@ async def signup_page(request: Request):
     return templates.TemplateResponse("sign-up.html", {"request": request})
 
 
+# Actions after pressing send button in signin form
 @auth_router.post("/signup")
 async def handle_registration(
+    full_name: str = Form(...),
     username: str = Form(...),
     email: str = Form(...),
     password: str = Form(...),
     confirm_password: str = Form(...),
+    db: Session = Depends(get_db),
 ):
 
     print("Works correctly")
 
-    #! One of future implementations
+    # * One of future implementations
     # if len(password) > 71: return {"error": "Password shouldn't be longer than 71 cahracters"}
     # elif len(password) < 8: return {"error": "Password should be at least 8 long"}
+
+    # TODO: Password hashing logic
+
+    # TODO: Pydantic validator logic
+
+    if password != confirm_password:
+        return {"error": "Passwords do not match"}
+
+    # Create a new User object using your SQLAlchemy model
+    new_user = models.User(
+        full_name=full_name,
+        username=username,
+        email=email,
+        hashed_password=password,  #! Warning: In the future, hash this password!
+    )
+
+    # Add to session and save to database
+    try:
+        db.add(new_user)
+        db.commit()  # Write changes to the .db file
+        db.refresh(new_user)  # Refresh to get the generated ID from the DB
+    except Exception as e:
+        db.rollback()  # Roll back in case of error (for exaple duplicate email)
+        return {"error": f"Could not create user: {str(e)}"}
+
+    print(
+        f"""User {username} created successfully!
+          all info on user:
+          full_name: {full_name},
+          username: {username},
+          email: {email},
+          password: {password}"""
+    )
 
     return RedirectResponse(url="/chats", status_code=status.HTTP_303_SEE_OTHER)
