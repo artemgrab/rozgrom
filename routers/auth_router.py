@@ -3,6 +3,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from database import get_db
+from hashing import hash_password
 import models
 
 
@@ -56,12 +57,15 @@ async def handle_registration(
     print("Works correctly")
 
     # * One of future implementations
-    # if len(password) > 71: return {"error": "Password shouldn't be longer than 71 cahracters"}
-    # elif len(password) < 8: return {"error": "Password should be at least 8 long"}
-
-    # TODO: Password hashing logic
+    if len(password) > 71:
+        return {"error": "Password shouldn't be longer than 71 cahracters"}
+    elif len(password) < 4:  # Changed to 4 characters for easier production
+        # Change back to 8 characters after production
+        return {"error": "Password should be at least 8 long"}
 
     # TODO: Pydantic validator logic
+
+    hashed_password = hash_password(password)
 
     if password != confirm_password:
         return {"error": "Passwords do not match"}
@@ -71,16 +75,16 @@ async def handle_registration(
         full_name=full_name,
         username=username,
         email=email,
-        hashed_password=password,  #! Warning: In the future, hash this password!
+        hashed_password=hashed_password,
     )
 
     # Add to session and save to database
     try:
         db.add(new_user)
-        db.commit()  # Write changes to the .db file
+        db.commit()
         db.refresh(new_user)  # Refresh to get the generated ID from the DB
     except Exception as e:
-        db.rollback()  # Roll back in case of error (for exaple duplicate email)
+        db.rollback()
         return {"error": f"Could not create user: {str(e)}"}
 
     print(
