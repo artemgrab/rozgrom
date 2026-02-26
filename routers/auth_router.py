@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from database import get_db
-from hashing import hash_password
+from hashing import hash_password, verify_password
 import models
 
 
@@ -28,13 +28,39 @@ async def signin_page(request: Request):
 # Actions after pressing send button in signin form
 @auth_router.post("/signin")
 async def handle_signing_in(
-    email: str = Form(...),
+    username_or_email: str = Form(...),
     password: str = Form(...),
+    db: Session = Depends(get_db),
 ):
 
-    print("Works correctly")
+    if username_or_email.startswith("@"):
+        user = (
+            db.query(models.User)
+            .filter(models.User.username == username_or_email)
+            .first()
+        )
+    else:
+        user = (
+            db.query(models.User).filter(models.User.email == username_or_email).first()
+        )
 
-    return RedirectResponse(url="/chats", status_code=status.HTTP_303_SEE_OTHER)
+    if not user:
+        return RedirectResponse(
+            url="/signin?error=user_not_found",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+    if not verify_password(password, user.hashed_password):
+        return RedirectResponse(
+            url="/signin?error=invalid_credentials",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+    print(f"User {user.username} logged in successfully!")
+
+    return RedirectResponse(
+        url=f"/chats/{user.id}", status_code=status.HTTP_303_SEE_OTHER
+    )
 
 
 # Opens "sign-up" page
@@ -54,21 +80,27 @@ async def handle_registration(
     db: Session = Depends(get_db),
 ):
 
-    print("Works correctly")
-
-    # * One of future implementations
     if len(password) > 71:
-        return {"error": "Password shouldn't be longer than 71 cahracters"}
+        return RedirectResponse(
+            url="/signup?error=password_is_too_long",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
     elif len(password) < 4:  # Changed to 4 characters for easier production
         # Change back to 8 characters after production
-        return {"error": "Password should be at least 8 long"}
+        return RedirectResponse(
+            url="/signup?error=password_is_too_short",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
 
     # TODO: Pydantic validator logic
 
     hashed_password = hash_password(password)
 
     if password != confirm_password:
-        return {"error": "Passwords do not match"}
+        return RedirectResponse(
+            url="/signup?error=passwords_dont_match",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
 
     # Create a new User object using your SQLAlchemy model
     new_user = models.User(
@@ -96,4 +128,6 @@ async def handle_registration(
           password: {password}"""
     )
 
-    return RedirectResponse(url="/chats", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(
+        url="/chats/{user.id}", status_code=status.HTTP_303_SEE_OTHER
+    )

@@ -12,7 +12,8 @@
         <h1 class="title" style="margin-bottom: 30px;">Sign in to get started</h1>
 
         <form class="auth-form" action="/signin" method="POST">
-            <input type="email" name="email" autocomplete="email" class="form-input" placeholder="Email" required>
+            <input name="username_or_email" class="form-input" placeholder="Username / Email" required> 
+        <!-- No autocomplete of type for this input because it can be either one username or email --> 
             
             <div class="input-wrapper">
                 <input type="password" name="password" autocomplete="current-password" class="form-input" placeholder="Password" required>
