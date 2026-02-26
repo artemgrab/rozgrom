@@ -22,8 +22,7 @@ Base = declarative_base()
 
 def init_db():
     # * For Future
-    # Model classes (User, Message, Chat, etc.) must be imported
-    # before calling this function so SQLAlchemy can see them.
+    import models
     Base.metadata.create_all(bind=engine)
 
 
@@ -34,3 +33,4 @@ def get_db():
         yield db
     finally:
         db.close()
+

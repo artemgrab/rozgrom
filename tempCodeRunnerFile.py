@@ -1,15 +1,3 @@
-from fastapi import FastAPI, Request
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-from database import engine, init_db
-import models
-from routers.router_handler import main_router
-
-
-# Initializing app and toggling on router files
-app = FastAPI()
-app.include_router(main_router)
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # Create the database tables, look in "models.py"
