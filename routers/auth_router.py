@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from database import get_db
-from hashing import hash_password, verify_password
+from auth_logic import hash_password, verify_password
 import models
 
 
