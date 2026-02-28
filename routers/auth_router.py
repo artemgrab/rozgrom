@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from database import get_db
-from auth_logic import hash_password, verify_password
+from auth_logic import add_user
 import models
 
 
@@ -80,21 +80,24 @@ async def handle_registration(
     db: Session = Depends(get_db),
 ):
 
+    user_data = {
+        "full_name": full_name,
+        "username": username,
+        "email": email,
+        "password": password
+    }
+
     if len(password) > 71:
         return RedirectResponse(
             url="/signup?error=password_is_too_long",
             status_code=status.HTTP_303_SEE_OTHER,
         )
-    elif len(password) < 4:  # Changed to 4 characters for easier production
-        # Change back to 8 characters after production
+    elif len(password) < 4:             # Changed to 4 characters for easier production
+                                        # Change back to 8 characters after production
         return RedirectResponse(
             url="/signup?error=password_is_too_short",
             status_code=status.HTTP_303_SEE_OTHER,
         )
-
-    # TODO: Pydantic validator logic
-
-    hashed_password = hash_password(password)
 
     if password != confirm_password:
         return RedirectResponse(
@@ -102,32 +105,13 @@ async def handle_registration(
             status_code=status.HTTP_303_SEE_OTHER,
         )
 
-    # Create a new User object using your SQLAlchemy model
-    new_user = models.User(
-        full_name=full_name,
-        username=username,
-        email=email,
-        hashed_password=hashed_password,
-    )
+    # Addes user to database
+    add_user(db, user_data)
 
-    # Add to session and save to database
-    try:
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)  # Refresh to get the generated ID from the DB
-    except Exception as e:
-        db.rollback()
-        return {"error": f"Could not create user: {str(e)}"}
-
-    print(
-        f"""User {username} created successfully!
-          all info on user:
-          full_name: {full_name},
-          username: {username},
-          email: {email},
-          password: {password}"""
-    )
 
     return RedirectResponse(
         url="/chats/{user.id}", status_code=status.HTTP_303_SEE_OTHER
     )
+
+
+    # TODO: Pydantic validator logic
