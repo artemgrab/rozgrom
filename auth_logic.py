@@ -12,7 +12,7 @@ def hash_password(password: str):
 
 
 # Verifies whether the password is correct
-def check_password(plain_password: str, hashed_password: str):
+def verify_password(plain_password: str, hashed_password: str):
 
     password_bytes = plain_password.encode("utf-8")[:71]
     hash_bytes = hashed_password.encode("utf-8")

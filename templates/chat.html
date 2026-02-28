@@ -6,7 +6,6 @@
     <title>Messenger - Messages</title>
 </head>
 <body>
-
     <main class="app-container">
         <section class="chat-window">
             <div class="messages-container">
@@ -26,9 +25,9 @@
             </div>
 
             <footer class="chat-input-area">
-                <form class="message-form" action="/send-message" method="POST">                    
+                <form class="message-form" id="chat-form">                                      
                     <input type="text" 
-                        name="message_text" 
+                        id="message_input"  name="message_text" 
                         placeholder="Write a message..." 
                         autocomplete="off" 
                         required>
@@ -37,10 +36,9 @@
                     </button>
                 </form>
             </footer>
-
         </section>
-
     </main>
 
+    <script src="/static/js/chat_ws.js"></script>
 </body>
 </html>
