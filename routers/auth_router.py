@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from auth_logic import add_user, verify_password
 import models
-from schemas import UserCreate, UserLogin
+from schemas import UserCreate, UserLogin, as_form
 
 
 auth_router = APIRouter()
@@ -64,7 +64,10 @@ async def signup_page(request: Request):
 
 # Actions after pressing send button in signin form
 @auth_router.post("/signup")
-async def handle_registration(user_data: UserCreate, db: Session = Depends(get_db)):
+async def handle_registration(
+        user_data: UserCreate = Depends(as_form(UserCreate)),
+        db: Session = Depends(get_db)
+    ):
 
     # Transforms Pydentinc type object into dict that we can push into data base via add_user
     user_dict = user_data.model_dump(exclude={'confirm_password'})

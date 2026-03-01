@@ -2,7 +2,8 @@
 # So user's input verification while singing in and signing up should be here
 
 from pydantic import BaseModel, EmailStr, Field, model_validator
-
+from fastapi import Form
+from typing import Type, TypeVar
 
 # Class-helper which would do all the work of checking during signing up
 class UserCreate(BaseModel):
@@ -28,6 +29,41 @@ class UserCreate(BaseModel):
     
 # Class-helper which would do all the work of checking during signing in
 class UserLogin(BaseModel):
+
+    # This will automatically check wether user typed data is correctly formated
+    username_or_email: str = Field(..., min_length=3, max_length=30)
+
+
+# Needed for as_form decorator
+T = TypeVar("T", bound=BaseModel)
+
+# This decorator converts Pydantic models to FastAPI Form dependencies
+# Ask @Dagernoun if you wanna know more
+def as_form(cls: Type[T]):
+
+    new_parameters = []
+    for field_name, model_field in cls.model_fields.items():
+        # This creates a FastAPI Form dependency for each field
+        new_parameters.append(
+            (field_name, Form(..., alias=field_name))
+        )
+    
+    async def as_form_func(**data):
+        return cls(**data)
+    
+    # We update the signature so FastAPI knows how to inject the form fields
+    import inspect
+    as_form_func.__signature__ = inspect.signature(as_form_func).replace(
+        parameters=[
+            inspect.Parameter(
+                name,
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                default=f,
+            )
+            for name, f in new_parameters
+        ]
+    )
+    return as_form_func
 
 
 
