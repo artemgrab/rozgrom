@@ -3,8 +3,6 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from database import Base
 
-# from sqlalchemy.orm import relationship
-
 
 class User(Base):
     __tablename__ = "users"
@@ -17,18 +15,13 @@ class User(Base):
 
     hashed_password = Column(String, nullable=False)
 
-    is_active = Column(Boolean, default=True, nullable=True)  # User isn't banned
-    last_seen = Column(DateTime, onupdate=func.now())  # When user's info changes in db
-    join_time = Column(DateTime, server_default=func.now())  # When user signed up
+    is_active = Column(Boolean, default=True, nullable=True)        # Whether user is banned
+    last_seen = Column(DateTime, onupdate=func.now())               # When user's info changes in db
+    join_time = Column(DateTime, server_default=func.now())         # When user signed up
 
-    # TODO: Legacy code. Should it be deleted?
-    # messages_sent = relationship(
-    #     "Message", backref="sender", foreign_keys="Message.sender_id"
-    # )
-    messages_sent = relationship("Message", back_populates="sender")
+    messages_sent = relationship("Message", back_populates="sender", foreign_keys="[Message.sender_id]")
 
 
-# * Might be useful in future
 class Message(Base):
     __tablename__ = "messages"
 
@@ -40,7 +33,7 @@ class Message(Base):
     receiver_id = Column(Integer, ForeignKey("users.id")) 
     chat_id = Column(Integer, ForeignKey("chats.id"))    
 
-    sender = relationship("User", foreign_keys=[sender_id], back_populates="messages_sent")
+    sender = relationship("User", back_populates="messages_sent", foreign_keys=[sender_id])
     chat = relationship("Chat", back_populates="messages")
 
 

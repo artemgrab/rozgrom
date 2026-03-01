@@ -32,6 +32,7 @@ class UserLogin(BaseModel):
 
     # This will automatically check wether user typed data is correctly formated
     username_or_email: str = Field(..., min_length=3, max_length=30)
+    password: str
 
 
 # Needed for as_form decorator
@@ -51,7 +52,7 @@ def as_form(cls: Type[T]):
     async def as_form_func(**data):
         return cls(**data)
     
-    # We update the signature so FastAPI knows how to inject the form fields
+    # Updates the signature so FastAPI knows how to inject the form fields
     import inspect
     as_form_func.__signature__ = inspect.signature(as_form_func).replace(
         parameters=[
@@ -63,12 +64,5 @@ def as_form(cls: Type[T]):
             for name, f in new_parameters
         ]
     )
+
     return as_form_func
-
-
-
-#* This might be usefule for TODO task above, but change the type of an error
-# return RedirectResponse(
-#             url="/signup?error=password_is_too_short",
-#             status_code=status.HTTP_303_SEE_OTHER,
-#         )

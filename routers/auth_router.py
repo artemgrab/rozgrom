@@ -30,7 +30,7 @@ async def signin_page(request: Request):
 # Actions after pressing send button in signin form
 @auth_router.post("/signin")
 async def handle_signing_in(
-    credentials: UserLogin,
+    credentials: UserLogin = Depends(as_form(UserLogin)),
     db: Session = Depends(get_db)
 ):
 
@@ -53,7 +53,7 @@ async def handle_signing_in(
 
     print(f"User {user.username} logged in successfully!")
 
-    return RedirectResponse(url=f"/chats/{user.id}", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/chats/{user.id}", status_code=status.HTTP_303_SEE_OTHER)
 
 
 #Opens "sign-up" page

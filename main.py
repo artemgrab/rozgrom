@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from database import engine, init_db
-import models
 from routers.router_handler import main_router
 
 
