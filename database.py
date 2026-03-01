@@ -21,7 +21,7 @@ Base = declarative_base()
 
 
 def init_db():
-    # * For Future
+    #* For Future
     import models
     Base.metadata.create_all(bind=engine)
 

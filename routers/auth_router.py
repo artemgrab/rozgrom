@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Form, status, Request, Depends
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from database import get_db
-from auth_logic import add_user
+from auth_logic import add_user, verify_password
 import models
+from schemas import UserCreate, UserLogin
 
 
 auth_router = APIRouter()
@@ -28,42 +30,33 @@ async def signin_page(request: Request):
 # Actions after pressing send button in signin form
 @auth_router.post("/signin")
 async def handle_signing_in(
-    username_or_email: str = Form(...),
-    password: str = Form(...),
-    db: Session = Depends(get_db),
+    credentials: UserLogin,
+    db: Session = Depends(get_db)
 ):
 
-    if username_or_email.startswith("@"):
-        user = (
-            db.query(models.User)
-            .filter(models.User.username == username_or_email)
-            .first()
-        )
-    else:
-        user = (
-            db.query(models.User).filter(models.User.email == username_or_email).first()
-        )
+    #! For now code with @ as first symbol is deleted
+    #! If needed can be taken from previous commits in GitHub
 
-    if not user:
-        return RedirectResponse(
-            url="/signin?error=user_not_found",
-            status_code=status.HTTP_303_SEE_OTHER,
+    user: models.User = db.query(models.User).filter(
+        or_(
+            models.User.username == credentials.username_or_email,
+            models.User.email == credentials.username_or_email
         )
+    ).first()
 
-    if not verify_password(password, user.hashed_password):
-        return RedirectResponse(
+
+    if not user or not verify_password(credentials.password, user.hashed_password): # type: ignore      #? Your IDE might be mad at user.hashed_password,
+        return RedirectResponse(                                                                        #? but it's correct, so we i added "type: ignore" 
             url="/signin?error=invalid_credentials",
             status_code=status.HTTP_303_SEE_OTHER,
         )
 
     print(f"User {user.username} logged in successfully!")
 
-    return RedirectResponse(
-        url=f"/chats/{user.id}", status_code=status.HTTP_303_SEE_OTHER
-    )
+    return RedirectResponse(url=f"/chats/{user.id}", status_code=status.HTTP_303_SEE_OTHER)
 
 
-# Opens "sign-up" page
+#Opens "sign-up" page
 @auth_router.get("/signup")
 async def signup_page(request: Request):
     return templates.TemplateResponse("sign-up.html", {"request": request})
@@ -71,47 +64,12 @@ async def signup_page(request: Request):
 
 # Actions after pressing send button in signin form
 @auth_router.post("/signup")
-async def handle_registration(
-    full_name: str = Form(...),
-    username: str = Form(...),
-    email: str = Form(...),
-    password: str = Form(...),
-    confirm_password: str = Form(...),
-    db: Session = Depends(get_db),
-):
+async def handle_registration(user_data: UserCreate, db: Session = Depends(get_db)):
 
-    user_data = {
-        "full_name": full_name,
-        "username": username,
-        "email": email,
-        "password": password
-    }
-
-    if len(password) > 71:
-        return RedirectResponse(
-            url="/signup?error=password_is_too_long",
-            status_code=status.HTTP_303_SEE_OTHER,
-        )
-    elif len(password) < 4:             # Changed to 4 characters for easier production
-                                        # Change back to 8 characters after production
-        return RedirectResponse(
-            url="/signup?error=password_is_too_short",
-            status_code=status.HTTP_303_SEE_OTHER,
-        )
-
-    if password != confirm_password:
-        return RedirectResponse(
-            url="/signup?error=passwords_dont_match",
-            status_code=status.HTTP_303_SEE_OTHER,
-        )
+    # Transforms Pydentinc type object into dict that we can push into data base via add_user
+    user_dict = user_data.model_dump(exclude={'confirm_password'})
 
     # Addes user to database
-    add_user(db, user_data)
+    add_user(db, user_dict)
 
-
-    return RedirectResponse(
-        url="/chats/{user.id}", status_code=status.HTTP_303_SEE_OTHER
-    )
-
-
-    # TODO: Pydantic validator logic
+    return RedirectResponse(url="/signin", status_code=status.HTTP_303_SEE_OTHER)
