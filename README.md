@@ -1,7 +1,7 @@
 # 🎯 DUPLO: PROJECT META INFO
 Turn your biggest dreams into playable quests.
 
-Paradox is an AI-powered, gamified productivity application designed to conquer procrastination and help users achieve their life goals. Whether your dream is to "become an actor," "learn a new language," or simply survive exam week, Paradox breaks down massive, overwhelming ambitions into bite-sized, actionable tasks.
+Paradox is an AI-powered, gamified productivity application designed to conquer procrastination and help users achieve their life goals. Whether your dream is to "become an actor," "learn a new language," or simply survive exam week, Duplo breaks down massive, overwhelming ambitions into bite-sized, actionable tasks.
 
 Built primarily for students and youth, our app replaces boring to-do lists with a reward-driven ecosystem that keeps dopamine levels high and motivation steady.
 
@@ -14,9 +14,10 @@ Built primarily for students and youth, our app replaces boring to-do lists with
 🎯 Smart Tracking: Track your progress without the burnout. Paradox turns routine into an engaging challenge.
 
 # 🚀 ROADMAP & FUTURE VISION
-We are actively developing Paradox for upcoming tech competitions and hackathons. Our next major milestones include:
+Our next major milestones include:
 
 👁️ Proof of Work (Computer Vision): Integration with OpenCV to verify task completion through photo and video evidence. The AI will check if the real-world task was actually done, preventing cheating and ensuring true productivity.
 
 📌 Community Notice Board: A social hub where users can post and accept side-quests from friends or strangers, earning extra in-game currency for helping others.
 
+<img width="393" height="620" alt="image" src="https://github.com/user-attachments/assets/bbe480cf-107d-4be4-9b11-1d9502c1aedb" />
